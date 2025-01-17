@@ -1,0 +1,40 @@
+rm(list=ls())
+library(tidyr)
+library(dplyr)
+library(pheatmap)
+library(readr)
+#COMANDOS CORRECTOS
+library(readxl)
+rs_todaspoblaciones <- read_excel("rs_todaspoblaciones.xlsx")
+View(rs_todaspoblaciones)
+
+rs_todaspoblaciones <- as.data.frame(rs_todaspoblaciones)
+rownames(rs_todaspoblaciones) <- rs_todaspoblaciones$RS
+print(rs_todaspoblaciones)
+
+rs_todaspoblaciones <- rs_todaspoblaciones[ , -which(colnames(rs_todaspoblaciones) == "RS")] #eliminar la columna 1 de RS del data frame 
+#revisar si hay valores de NA
+sum(is.na(rs_todaspoblaciones)) #NO HAY
+ 
+#HYA QUE ELIMINAR TODOS LOS VALORES QUE SEAN 0 EN TODAS LAS POBLACIONES. 
+# Elimina filas donde todos los valores (en todas las columnas) son iguales a 0
+# Eliminar filas con todos los valores iguales a 0 (ignorar columna "RS")
+datos_depurados <- rs_todaspoblaciones[!apply(rs_todaspoblaciones[, -1], 1, function(x) all(x == 0)), ]
+
+#VAMOS A HACER LE HEATMAP SOLAMENTE CON LOS RS CLINICAMENTE RELEVANTES. FILTRAMOS LA BASE DE DATOS SEGUN RS
+# Seleccionar solo las variantes genéticas deseadas
+variantes_de_interes <- c("rs115232898_C", "rs72549310_A", "rs114096998_T", "rs3918290_T", "rs56038477_T", "rs75017182_C", "rs67376798_A", "rs183385770_T", "rs146356975_C", "rs187713395_G", "rs186169810_C", "rs183105782_G", "rs59086055_A", "rs112766203_A", "rs536577604_C", "rs573299212_T", "rs527580106_C", "rs528430685_A", "rs55886062_C")
+print(variantes_de_interes)
+
+rs_clinicas <- rs_todaspoblaciones[rownames(rs_todaspoblaciones) %in% variantes_de_interes, ]
+print(rs_clinicas)
+#convertir la base de variantes clinicas en un data frame
+rs_clinicas <- as.data.frame(rs_clinicas)
+
+#Graficar Heatmap
+set.seed(1995)
+pheatmap(rs_clinicas, 
+         main = "Heatmap", 
+         cluster_cols = TRUE,
+         cluster_rows = TRUE,
+         color = colorRampPalette(c("blue", "ivory", "red"))(10000))
