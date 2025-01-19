@@ -8,33 +8,38 @@ library(readxl)
 rs_todaspoblaciones <- read_excel("rs_todaspoblaciones.xlsx")
 View(rs_todaspoblaciones)
 
-rs_todaspoblaciones <- as.data.frame(rs_todaspoblaciones)
-rownames(rs_todaspoblaciones) <- rs_todaspoblaciones$RS
-print(rs_todaspoblaciones)
+rs_poblacionesordenadas <- as.data.frame(rs_poblacionesordenadas)
+rownames(rs_poblacionesordenadas) <- rs_poblacionesordenadas$RS
+print(rs_poblacionesordenadas)
 
-rs_todaspoblaciones <- rs_todaspoblaciones[ , -which(colnames(rs_todaspoblaciones) == "RS")] #eliminar la columna 1 de RS del data frame 
+rs_poblacionesordenadas <- rs_poblacionesordenadas[ , -which(colnames(rs_poblacionesordenadas) == "RS")] #eliminar la columna 1 de RS del data frame 
 #revisar si hay valores de NA
-sum(is.na(rs_todaspoblaciones)) #NO HAY
+sum(is.na(rs_poblacionesordenadas)) #NO HAY
  
 #HYA QUE ELIMINAR TODOS LOS VALORES QUE SEAN 0 EN TODAS LAS POBLACIONES. 
 # Elimina filas donde todos los valores (en todas las columnas) son iguales a 0
 # Eliminar filas con todos los valores iguales a 0 (ignorar columna "RS")
-datos_depurados <- rs_todaspoblaciones[!apply(rs_todaspoblaciones[, -1], 1, function(x) all(x == 0)), ]
+datos_depurados <- rs_poblacionesordenadas[!apply(rs_poblacionesordenadas[, -1], 1, function(x) all(x == 0)), ]
 
 #VAMOS A HACER LE HEATMAP SOLAMENTE CON LOS RS CLINICAMENTE RELEVANTES. FILTRAMOS LA BASE DE DATOS SEGUN RS
 # Seleccionar solo las variantes genéticas deseadas
-variantes_de_interes <- c("rs115232898_C", "rs72549310_A", "rs114096998_T", "rs3918290_T", "rs56038477_T", "rs75017182_C", "rs67376798_A", "rs183385770_T", "rs146356975_C", "rs187713395_G", "rs186169810_C", "rs183105782_G", "rs59086055_A", "rs112766203_A", "rs536577604_C", "rs573299212_T", "rs527580106_C", "rs528430685_A", "rs55886062_C")
+variantes_de_interes <- c("rs115232898_C", "rs72549310_A", "rs114096998_T", "rs3918290_T", "rs56038477_T", "rs75017182_C", "rs67376798_A", "rs183385770_T", "rs146356975_C", "rs187713395_G", "rs186169810_C", "rs183105782_G", "rs59086055_A", "rs112766203_A", "rs536577604_C", "rs573299212_T", "rs527580106_C", "rs528430685_A", "rs55886062_C", "rs371587702_A")
 print(variantes_de_interes)
 
-rs_clinicas <- rs_todaspoblaciones[rownames(rs_todaspoblaciones) %in% variantes_de_interes, ]
+rs_clinicas <- rs_poblacionesordenadas[rownames(rs_poblacionesordenadas) %in% variantes_de_interes, ]
 print(rs_clinicas)
 #convertir la base de variantes clinicas en un data frame
 rs_clinicas <- as.data.frame(rs_clinicas)
+
+#no me ha ordenado las poblaciones a pesar de tener el excel ordenado. pruebo con un comando desde aqui. 
+orden_columnaspoblaciones <- c("LWK", "ESN", "YRI", "MSL", "GWD", "ACB", "ASW", "CLM", "MXL", "PUR", "PEL", "TSI", "IBS", "GBR", "CEU", "FIN", "PJL", "GIH", "ITU", "STU", "BEB", "CDX", "KHV", "CHS", "CHB", "JPT")
 
 #Graficar Heatmap
 set.seed(1995)
 pheatmap(rs_clinicas, 
          main = "Heatmap", 
-         cluster_cols = TRUE,
+         cluster_cols = FALSE,
          cluster_rows = TRUE,
-         color = colorRampPalette(c("blue", "ivory", "red"))(10000))
+         color = colorRampPalette(c("ivory", "skyblue", "blue"))(10000))
+
+
