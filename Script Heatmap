@@ -5,8 +5,9 @@ library(pheatmap)
 library(readr)
 #COMANDOS CORRECTOS
 library(readxl)
-rs_todaspoblaciones <- read_excel("rs_todaspoblaciones.xlsx")
-View(rs_todaspoblaciones)
+rs_poblacionesordenadas <- read_excel("rs_poblacionesordenadas.xlsx")
+View(rs_poblacionesordenadas)
+
 
 rs_poblacionesordenadas <- as.data.frame(rs_poblacionesordenadas)
 rownames(rs_poblacionesordenadas) <- rs_poblacionesordenadas$RS
@@ -28,6 +29,10 @@ print(variantes_de_interes)
 
 rs_clinicas <- rs_poblacionesordenadas[rownames(rs_poblacionesordenadas) %in% variantes_de_interes, ]
 print(rs_clinicas)
+
+#renombrar las filas de la base de datos de rs_clinicas para cambiar los rs por el cambio de nucleotido. 
+rownames(rs_clinicas) <- c("2846A>T", "1905+1G>A", "2039T>C", "3067C>T", "1774C>T", "2279C>T", "1236G>A", "1129-5923C>G", "1679T>G", "557A>G", "194C>T", "868A>G", "1024G>A", "61C>T", "1314T>G", "910T>C", "1073G>A", "467A>G", "1228C>T", "229A>G")
+
 #convertir la base de variantes clinicas en un data frame
 rs_clinicas <- as.data.frame(rs_clinicas)
 
@@ -36,10 +41,8 @@ orden_columnaspoblaciones <- c("LWK", "ESN", "YRI", "MSL", "GWD", "ACB", "ASW", 
 
 #Graficar Heatmap
 set.seed(1995)
-pheatmap(rs_clinicas, 
-         main = "Heatmap", 
+pheatmap(t(rs_clinicas), 
+         main = "", 
          cluster_cols = FALSE,
-         cluster_rows = TRUE,
-         color = colorRampPalette(c("ivory", "skyblue", "blue"))(10000))
-
-
+         cluster_rows = FALSE,
+         color = colorRampPalette(c("white", "skyblue", "blue"))(10000))
