@@ -24,14 +24,14 @@ datos_depurados <- rs_poblacionesordenadas[!apply(rs_poblacionesordenadas[, -1],
 
 #VAMOS A HACER LE HEATMAP SOLAMENTE CON LOS RS CLINICAMENTE RELEVANTES. FILTRAMOS LA BASE DE DATOS SEGUN RS
 # Seleccionar solo las variantes genéticas deseadas
-variantes_de_interes <- c("rs115232898_C", "rs72549310_A", "rs114096998_T", "rs3918290_T", "rs56038477_T", "rs75017182_C", "rs67376798_A", "rs183385770_T", "rs146356975_C", "rs187713395_G", "rs186169810_C", "rs183105782_G", "rs59086055_A", "rs112766203_A", "rs536577604_C", "rs573299212_T", "rs527580106_C", "rs528430685_A", "rs55886062_C", "rs371587702_A")
+variantes_de_interes <- c("rs115232898_C", "rs72549310_A", "rs3918290_T", "rs56038477_T", "rs75017182_C", "rs67376798_A", "rs183385770_T", "rs146356975_C", "rs186169810_C", "rs59086055_A", "rs112766203_A", "rs55886062_C")
 print(variantes_de_interes)
 
 rs_clinicas <- rs_poblacionesordenadas[rownames(rs_poblacionesordenadas) %in% variantes_de_interes, ]
 print(rs_clinicas)
 
 #renombrar las filas de la base de datos de rs_clinicas para cambiar los rs por el cambio de nucleotido. 
-rownames(rs_clinicas) <- c("2846A>T", "1905+1G>A", "2039T>C", "3067C>T", "1774C>T", "2279C>T", "1236G>A", "1129-5923C>G", "1679T>G", "557A>G", "194C>T", "868A>G", "1024G>A", "61C>T", "1314T>G", "910T>C", "1073G>A", "467A>G", "1228C>T", "229A>G")
+rownames(rs_clinicas) <- c("2846A>T", "1905+1G>A", "1774C>T", "2279C>T", "1236G>A", "1129-5923C>G", "1679T>G", "557A>G", "868A>G", "1024G>A", "61C>T", "1314T>G")
 
 #convertir la base de variantes clinicas en un data frame
 rs_clinicas <- as.data.frame(rs_clinicas)
@@ -46,3 +46,5 @@ pheatmap(t(rs_clinicas),
          cluster_cols = FALSE,
          cluster_rows = FALSE,
          color = colorRampPalette(c("white", "skyblue", "blue"))(10000))
+
+
